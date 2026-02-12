@@ -140,7 +140,7 @@ spec:
     spec:
       containers:
       - name: weatherapp-container
-        image: 374965156099.dkr.ecr.us-west-2.amazonaws.com/weatherapp:1.5.2
+        image: 923687682943.dkr.ecr.us-west-2.amazonaws.com/weatherapp:1.5.2
         ports:
         - containerPort: 8081
         resources:
@@ -446,7 +446,7 @@ kubectl annotate deployment weatherapp -n directory deployment.kubernetes.io/rev
 
 # Update to a "new version" (we'll use a different tag or simulate with rolling restart)
 # Option 1: Change image tag (if you have different versions)
-kubectl set image deployment/weatherapp weatherapp-container=374965156099.dkr.ecr.us-west-2.amazonaws.com/weatherapp:1.5.3 -n directory
+kubectl set image deployment/weatherapp weatherapp-container=923687682943.dkr.ecr.us-west-2.amazonaws.com/weatherapp:1.5.3 -n directory
 
 # Option 2: If no new image, trigger rolling restart with annotation
 kubectl patch deployment weatherapp -n directory -p '{"spec":{"template":{"metadata":{"annotations":{"app.version":"v1.5.3","deployment.date":"'$(date)'"}}}}}'
@@ -553,7 +553,7 @@ echo "✅ Image ready for deployment"
 ```bash
 # Deploy hotfix immediately
 kubectl set image deployment/weatherapp \
-  weatherapp-container=374965156099.dkr.ecr.us-west-2.amazonaws.com/weatherapp:1.5.4-hotfix \
+  weatherapp-container=923687682943.dkr.ecr.us-west-2.amazonaws.com/weatherapp:1.5.4-hotfix \
   -n directory
 
 # Force immediate rollout
@@ -602,7 +602,7 @@ git push origin --delete hotfix/critical-header-fix
 ```bash
 # Reset deployment to original image
 kubectl set image deployment/weatherapp \
-  weatherapp-container=374965156099.dkr.ecr.us-west-2.amazonaws.com/weatherapp:1.5.2 \
+  weatherapp-container=923687682943.dkr.ecr.us-west-2.amazonaws.com/weatherapp:1.5.2 \
   -n directory
 
 # Scale back to original replicas
