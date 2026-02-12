@@ -10,7 +10,7 @@ pipeline {
         choice(name: 'Manual_Approval', choices: ['Approve','Reject'], description: 'Approve or Reject the deployment')
     }
     environment {
-        EMAIL_TO = 'betechincorporated@gmail.com'
+        EMAIL_TO = 'bus57790@hotmail.com'
         AWS_REGION = 'us-west-2'
     }
     stages {
@@ -36,12 +36,12 @@ pipeline {
                         # Try different possible digest key formats
                         aws dynamodb delete-item \
                             --table-name betech-terraform-locks \
-                            --key '{"LockID":{"S":"betech-terraform-state-bucket-2025/infra/terraformstatefile-md5"}}' \
+                            --key '{"LockID":{"S":"betech-terraform-state-bucket-2027/infra/terraformstatefile-md5"}}' \
                             --region us-west-2 2>/dev/null || echo "Digest entry format 1 not found"
                         
                         aws dynamodb delete-item \
                             --table-name betech-terraform-locks \
-                            --key '{"LockID":{"S":"betech-terraform-state-bucket-2025/infra/terraformstatefile"}}' \
+                            --key '{"LockID":{"S":"betech-terraform-state-bucket-2027/infra/terraformstatefile"}}' \
                             --region us-west-2 2>/dev/null || echo "Digest entry format 2 not found"
                         
                         # List all items in the table to see what's there
@@ -56,7 +56,7 @@ pipeline {
                         echo "Clearing any stuck lock entries..."
                         aws dynamodb delete-item \
                             --table-name betech-terraform-locks \
-                            --key '{"LockID":{"S":"betech-terraform-state-bucket-2025/infra/terraformstatefile"}}' \
+                            --key '{"LockID":{"S":"betech-terraform-state-bucket-2027/infra/terraformstatefile"}}' \
                             --region us-west-2 2>/dev/null || echo "No lock entry to clear"
                         
                         # Force clear the entire DynamoDB table if needed (last resort)
@@ -108,11 +108,11 @@ pipeline {
                             
                             # Backup current state from S3
                             echo "Backing up current state file..."
-                            aws s3 cp s3://betech-terraform-state-bucket-2025/infra/terraformstatefile ./terraform.tfstate.backup-$(date +%Y%m%d_%H%M%S) 2>/dev/null || echo "No state file to backup"
+                            aws s3 cp s3://betech-terraform-state-bucket-2027/infra/terraformstatefile ./terraform.tfstate.backup-$(date +%Y%m%d_%H%M%S) 2>/dev/null || echo "No state file to backup"
                             
                             # Remove corrupted state temporarily
                             echo "Temporarily removing state file for fresh init..."
-                            aws s3 rm s3://betech-terraform-state-bucket-2025/infra/terraformstatefile 2>/dev/null || echo "No state file to remove"
+                            aws s3 rm s3://betech-terraform-state-bucket-2027/infra/terraformstatefile 2>/dev/null || echo "No state file to remove"
                             
                             # Try init with empty state
                             echo "Initializing with clean state..."
@@ -137,7 +137,7 @@ pipeline {
                                 echo "=== MANUAL RECOVERY STEPS ==="
                                 echo "1. Go to AWS Console -> DynamoDB -> Tables -> betech-terraform-locks"
                                 echo "2. Delete ALL items in the table (if any exist)"
-                                echo "3. Go to AWS Console -> S3 -> betech-terraform-state-bucket-2025 bucket"
+                                echo "3. Go to AWS Console -> S3 -> betech-terraform-state-bucket-2027 bucket"
                                 echo "4. Delete the file: infra/terraformstatefile (if it exists)"
                                 echo "5. Re-run this pipeline"
                                 echo "================================"
@@ -154,7 +154,7 @@ pipeline {
                             echo "Checking AWS credentials and permissions..."
                             aws sts get-caller-identity || echo "AWS credentials issue detected"
                             echo "Checking S3 bucket access..."
-                            aws s3 ls s3://betech-terraform-state-bucket-2025/ || echo "S3 bucket access issue detected"
+                            aws s3 ls s3://betech-terraform-state-bucket-2027/ || echo "S3 bucket access issue detected"
                             echo "Checking DynamoDB table access..."
                             aws dynamodb describe-table --table-name betech-terraform-locks --region us-west-2 || echo "DynamoDB table access issue detected"
                             exit 1
@@ -366,12 +366,12 @@ pipeline {
                             # Try different possible digest key formats for stage 2
                             aws dynamodb delete-item \
                                 --table-name betech-terraform-locks \
-                                --key '{"LockID":{"S":"betech-terraform-state-bucket-2025/infra/stage2/terraformstatefile-md5"}}' \
+                                --key '{"LockID":{"S":"betech-terraform-state-bucket-2027/infra/stage2/terraformstatefile-md5"}}' \
                                 --region us-west-2 2>/dev/null || echo "Stage 2 digest entry format 1 not found"
                             
                             aws dynamodb delete-item \
                                 --table-name betech-terraform-locks \
-                                --key '{"LockID":{"S":"betech-terraform-state-bucket-2025/infra/stage2/terraformstatefile"}}' \
+                                --key '{"LockID":{"S":"betech-terraform-state-bucket-2027/infra/stage2/terraformstatefile"}}' \
                                 --region us-west-2 2>/dev/null || echo "Stage 2 digest entry format 2 not found"
                             
                             # List all items in the table to see what's there for stage 2
@@ -386,7 +386,7 @@ pipeline {
                             echo "Clearing any stuck Stage 2 lock entries..."
                             aws dynamodb delete-item \
                                 --table-name betech-terraform-locks \
-                                --key '{"LockID":{"S":"betech-terraform-state-bucket-2025/infra/stage2/terraformstatefile"}}' \
+                                --key '{"LockID":{"S":"betech-terraform-state-bucket-2027/infra/stage2/terraformstatefile"}}' \
                                 --region us-west-2 2>/dev/null || echo "No Stage 2 lock entry to clear"
                             
                             # Force clear any stage 2 related entries from DynamoDB table if needed
@@ -437,11 +437,11 @@ pipeline {
                                 
                                 # Backup current stage 2 state from S3
                                 echo "Backing up current Stage 2 state file..."
-                                aws s3 cp s3://betech-terraform-state-bucket-2025/infra/stage2/terraformstatefile ./terraform.tfstate.backup-stage2-$(date +%Y%m%d_%H%M%S) 2>/dev/null || echo "No Stage 2 state file to backup"
+                                aws s3 cp s3://betech-terraform-state-bucket-2027/infra/stage2/terraformstatefile ./terraform.tfstate.backup-stage2-$(date +%Y%m%d_%H%M%S) 2>/dev/null || echo "No Stage 2 state file to backup"
                                 
                                 # Remove corrupted stage 2 state temporarily
                                 echo "Temporarily removing Stage 2 state file for fresh init..."
-                                aws s3 rm s3://betech-terraform-state-bucket-2025/infra/stage2/terraformstatefile 2>/dev/null || echo "No Stage 2 state file to remove"
+                                aws s3 rm s3://betech-terraform-state-bucket-2027/infra/stage2/terraformstatefile 2>/dev/null || echo "No Stage 2 state file to remove"
                                 
                                 # Try init with empty state
                                 echo "Initializing Stage 2 with clean state..."
@@ -453,7 +453,7 @@ pipeline {
                                     echo "=== STAGE 2 MANUAL RECOVERY STEPS ==="
                                     echo "1. Go to AWS Console -> DynamoDB -> Tables -> betech-terraform-locks"
                                     echo "2. Delete items with LockID containing 'infra/stage2/terraformstatefile'"
-                                    echo "3. Go to AWS Console -> S3 -> betech-terraform-state-bucket-2025 bucket"
+                                    echo "3. Go to AWS Console -> S3 -> betech-terraform-state-bucket-2027 bucket"
                                     echo "4. Delete the file: infra/stage2/terraformstatefile (if it exists)"
                                     echo "5. Re-run this pipeline"
                                     echo "========================================"
@@ -470,7 +470,7 @@ pipeline {
                                 echo "Checking AWS credentials and permissions for Stage 2..."
                                 aws sts get-caller-identity || echo "AWS credentials issue detected"
                                 echo "Checking S3 bucket access for Stage 2..."
-                                aws s3 ls s3://betech-terraform-state-bucket-2025/infra/stage2/ || echo "S3 stage2 path access issue detected"
+                                aws s3 ls s3://betech-terraform-state-bucket-2027/infra/stage2/ || echo "S3 stage2 path access issue detected"
                                 echo "Checking DynamoDB table access for Stage 2..."
                                 aws dynamodb describe-table --table-name betech-terraform-locks --region us-west-2 || echo "DynamoDB table access issue detected"
                                 cd ..
@@ -1081,14 +1081,14 @@ EOF
                 
                 echo 'Cleaning remote state from S3...'
                 # Try to clean remote state with better error handling
-                aws s3api head-object --bucket betech-terraform-state-bucket-2025 --key infra/terraformstatefile >/dev/null 2>&1 && {
+                aws s3api head-object --bucket betech-terraform-state-bucket-2027 --key infra/terraformstatefile >/dev/null 2>&1 && {
                     echo "Removing main remote state..."
-                    aws s3 rm s3://betech-terraform-state-bucket-2025/infra/terraformstatefile
+                    aws s3 rm s3://betech-terraform-state-bucket-2027/infra/terraformstatefile
                 } || echo "Main remote state not found or already deleted"
                 
-                aws s3api head-object --bucket betech-terraform-state-bucket-2025 --key infra/stage2/terraformstatefile >/dev/null 2>&1 && {
+                aws s3api head-object --bucket betech-terraform-state-bucket-2027 --key infra/stage2/terraformstatefile >/dev/null 2>&1 && {
                     echo "Removing stage 2 remote state..."
-                    aws s3 rm s3://betech-terraform-state-bucket-2025/infra/stage2/terraformstatefile
+                    aws s3 rm s3://betech-terraform-state-bucket-2027/infra/stage2/terraformstatefile
                 } || echo "Stage 2 remote state not found or already deleted"
                 
                 echo 'Cleanup completed successfully'
@@ -1109,7 +1109,7 @@ EOF
         stage('8. Email Notification') {
             steps {
                echo 'Success for BETECH'
-               mail bcc: 'betechincorporated@gmail.com', 
+               mail bcc: 'bus57790@hotmail.com', 
                     body: """Terraform ${params.Deployment_Type} deployment is completed.
 
 ${params.Deployment_Type == 'destroy' ? 
@@ -1121,11 +1121,11 @@ Let me know if the changes look okay.
 Thanks,
 BETECH Solutions,
 +1 (123) 123-4567""", 
-                    cc: 'betechincorporated@gmail.com', 
+                    cc: 'bus57790@hotmail.com', 
                     from: '', 
                     replyTo: '', 
                     subject: "Terraform ${params.Deployment_Type} deployment completed!!!", 
-                    to: 'betechincorporated@gmail.com'
+                    to: 'bus57790@hotmail.com'
             }
         }
     }       
@@ -1143,7 +1143,7 @@ BETECH Solutions,
         }
         always {
             echo 'Slack Notifications.'
-            slackSend channel: '#all-weatherapp-cicd',
+            slackSend channel: '#all-all-weatherapp-cicd',
                 color: COLOR_MAP[currentBuild.currentResult],
                 message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URL}"
         }
